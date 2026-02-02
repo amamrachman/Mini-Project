@@ -29,7 +29,7 @@ const useTodo = () => {
   const handleSaveEdit = (id: string, newJudul: string) => {
     setTodos((prev) =>
       prev.map((todo) =>
-        todo.id === id ? { ...todo, Judul: newJudul } : todo,
+        todo.id === id ? { ...todo, judul: newJudul } : todo,
       ),
     );
     setEditTodoId(null);
@@ -47,7 +47,7 @@ const useTodo = () => {
   const handleChangeStatusTodo = (id: string) => {
     setTodos((prev) =>
       prev.map((todo) =>
-        todo.id === id ? { ...todo, Complete: !todo.complete } : todo,
+        todo.id === id ? { ...todo, complete: !todo.complete } : todo,
       ),
     );
   };

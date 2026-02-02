@@ -77,7 +77,7 @@ const TodoItem = ({
                 : "bg-gray-300 text-gray-700 hover:bg-gray-400"
             }`}
           >
-            {item.complete ? "✅ Selesai" : "⬜ Belum"}
+            {item.complete ? "⬜ Belum" : "✅ Selesai"}
           </button>
         </div>
       </div>
