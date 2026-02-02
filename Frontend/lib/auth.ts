@@ -1,43 +1,48 @@
-const API_URL = "http://localhost:8000";
+import ensureCsrfCookie, { getXsrfToken } from "./csrf";
 
-export async function getCsrfCookie() {
-  console.log("Getting CSRF cookie...");
-  await fetch(`${API_URL}/sanctum/csrf-cookie`, {
-    credentials: "include",
-  });
-  console.log("CSRF cookie obtained");
-}
+type RegisterPayloadType = {
+  name: string;
+  email: string;
+  password: string;
+};
 
-export async function login(email: string, password: string) {
-  console.log("Login attempt for:", email);
-  await getCsrfCookie();
+type LoginPayloadType = {
+  email: string;
+  password: string;
+};
 
-  const res = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({ email, password }),
-  });
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  if (!res.ok) {
-    console.error("Login failed with status:", res.status);
-    throw new Error("Login gagal");
-  }
-  console.log("Login successful");
-}
+const baseFetch = async (url: string, payload: unknown) => {
+    await ensureCsrfCookie();
 
-export async function getUser() {
-  console.log("Fetching user data...");
-  const res = await fetch(`${API_URL}/api/user`, {
-    credentials: "include",
-  });
+    const xsrfToken = getXsrfToken();
 
-  if (!res.ok) {
-    console.warn("Failed to fetch user");
-    return null;
-  }
-  console.log("User data retrieved");
-  return res.json();
-}
+    const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-XSRF-TOKEN": xsrfToken ?? "",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Request Failed");
+    }
+
+    return response.json();
+};
+
+const authRegister = async (payload: RegisterPayloadType) => {
+  return baseFetch(`${API_BASE_URL}/register`, payload);
+};
+
+const authLogin = async (payload: LoginPayloadType) => {
+  return baseFetch(`${API_BASE_URL}/login`, payload)
+};
+
+export { authRegister, authLogin };
