@@ -1,10 +1,13 @@
 "use client";
 
-import { authLogin } from "@/lib/auth";
+import { useAuthProvider } from "@/context/AuthContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const {login} = useAuthProvider();
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
@@ -24,8 +27,8 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      await authLogin(loginForm);
-      alert("Login Sukses");
+      await login(loginForm);
+      router.replace("/");
     } catch (error) {
       console.log(error);
       alert("Login Gagal");
@@ -38,7 +41,6 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {/* Header dengan gradien */}
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-8">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-white mb-2">
@@ -50,7 +52,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Form login */}
           <div className="p-6 md:p-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div>

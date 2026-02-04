@@ -2,9 +2,11 @@
 
 import { authRegister } from "@/lib/auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [registerForm, setRegisterForm] = useState({
     name: "",
     email: "",
@@ -26,7 +28,7 @@ const RegisterPage = () => {
 
     try {
       await authRegister(registerForm);
-      alert("Register Sukses");
+      router.replace('/auth/login');
     } catch (error) {
       console.log(error);
       alert("Register Gagal");
@@ -149,9 +151,6 @@ const RegisterPage = () => {
                     disabled={isLoading}
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  Password minimal 8 karakter
-                </p>
               </div>
 
               <button
