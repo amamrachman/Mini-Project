@@ -6,7 +6,7 @@ type TodoItemProps = {
   editTodoId: string | null;
   handleEditTodo: (id: string) => void;
   onDelete: (id: string) => void;
-  onSaveEdit: (NewJudul: string) => void;
+  onSaveEdit: (newJudul: string) => void;
   toggleStatus: (id: string) => void;
 };
 
@@ -18,34 +18,41 @@ const TodoItem = ({
   onSaveEdit,
   toggleStatus,
 }: TodoItemProps) => {
-  const [tempJudul, setTempJudul] = useState(editTodoId === item.id ? item.judul : "");
+  const [editingValue, setEditingValue] = useState("");
 
-  const handleTempJudul = () => {
-    onSaveEdit(tempJudul);
+  const isEditing = editTodoId === item.id;
+
+  const startEditing = () => {
+    setEditingValue(item.judul);
+    handleEditTodo(item.id);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSaveEdit(editingValue);
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-blue-500">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          {editTodoId === item.id ? (
-            <form onSubmit={handleTempJudul} className="flex space-x-2">
+          {isEditing ? (
+            <form onSubmit={handleSubmit} className="flex space-x-2">
               <label className="flex-1">
-                <span className="text-sm text-gray-600">
-                  Edit Judul {item.judul}
-                </span>
+                <span className="text-sm text-gray-600">Edit Judul</span>
                 <input
                   type="text"
-                  value={tempJudul}
-                  onChange={(e) => setTempJudul(e.target.value)}
+                  value={editingValue}
+                  onChange={(e) => setEditingValue(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
+                  autoFocus
                 />
               </label>
               <button
                 type="submit"
                 className="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition-colors duration-200"
               >
-                Edit
+                Simpan
               </button>
             </form>
           ) : (
@@ -64,7 +71,7 @@ const TodoItem = ({
             Delete
           </button>
           <button
-            onClick={() => handleEditTodo(item.id)}
+            onClick={startEditing}
             className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-md hover:bg-yellow-600 transition-colors duration-200"
           >
             Edit
@@ -77,7 +84,7 @@ const TodoItem = ({
                 : "bg-gray-300 text-gray-700 hover:bg-gray-400"
             }`}
           >
-            {item.complete ? "⬜ Belum" : "✅ Selesai"}
+            {item.complete ? "✅ Selesai" : "⬜ Belum"}
           </button>
         </div>
       </div>
