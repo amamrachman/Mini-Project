@@ -59,4 +59,10 @@ const authLogin = async (payload: LoginPayload) => {
   });
 };
 
-export { authRegister, authLogin };
+const authLogut = async () => {
+  return apiFetch(`${API_BASE_URL}/logout`, {
+    method: "POST"
+  })
+};
+
+export { authRegister, authLogin, authLogut };

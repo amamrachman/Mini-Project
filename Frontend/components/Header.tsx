@@ -2,30 +2,40 @@
 
 import { useAuthProvider } from "@/context/AuthContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Header = () => {
-  const { is_login } = useAuthProvider();
+  const { is_login, logout } = useAuthProvider();
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="text-center sm:text-left">
-        {is_login ? (
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
-            Daftar Tugasku
-          </h1>
-        ) : (
-          <>
-            <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
-              Daftar Tugasku
-            </h1>
-            <p className="text-gray-500 text-sm mt-1 hidden sm:block">
-              Kelola tugas harian Anda dengan mudah
-            </p>
-          </>
+        <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
+          Daftar Tugasku
+        </h1>
+        {!is_login && (
+          <p className="text-gray-500 text-sm mt-1 hidden sm:block">
+            Kelola tugas harian Anda dengan mudah
+          </p>
         )}
       </div>
+
       <div className="flex flex-col items-center sm:items-end gap-2">
-        {!is_login && (
+        {is_login ? (
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors duration-200"
+          >
+            Logout
+          </button>
+        ) : (
           <>
             <p className="text-gray-600 text-sm text-center sm:text-right">
               Login untuk melihat laporan todo
