@@ -41,3 +41,12 @@ export const syncTodos = async (todos: Todo[]) => {
     body: { todos },
   });
 };
+
+export const getReportApi = async () => {
+  const response = await apiFetch(`${API_BASE_URL}/api/todos/report`, {
+    method: "GET"
+  });
+
+  console.log(response);
+  return response;
+};

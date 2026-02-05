@@ -5,8 +5,15 @@ import { authLogin, authLogut, getCurrentUser } from "@/lib/auth";
 import { LoginPayload } from "@/types/Auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+type User = {
+  id: number;
+  name: string;
+  email: string;
+}
+
 type AuthContextType = {
   is_login: boolean;
+  user: User | null;
   login: (payload: { email: string; password: string }) => void;
   checkAuth: () => void;
   logout: () => void;
@@ -16,11 +23,13 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [is_login, setIs_login] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
     try {
-      await getCurrentUser();
+      const userData = await getCurrentUser();
+      setUser(userData);
       setIs_login(true);
     } catch (err) {
       setIs_login(false);
@@ -32,6 +41,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     await authLogut();
+    setUser(null);
     setIs_login(false);
   }
 
@@ -41,6 +51,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (payload: LoginPayload) => {
     await authLogin(payload);
+    const userData = await getCurrentUser();
+    setUser(userData);
 
     const localTodosStr = localStorage.getItem("guestTodos");
     const localTodos = localTodosStr ? JSON.parse(localTodosStr) : [];
@@ -62,7 +74,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ is_login, login, checkAuth, logout }}>
+    <AuthContext.Provider value={{ is_login, login, checkAuth, logout, user }}>
       {children}
     </AuthContext.Provider>
   );

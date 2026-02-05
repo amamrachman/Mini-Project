@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const Header = () => {
-  const { is_login, logout } = useAuthProvider();
+  const { is_login, logout, user } = useAuthProvider();
 
   const router = useRouter();
 
@@ -18,7 +18,7 @@ const Header = () => {
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
       <div className="text-center sm:text-left">
         <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
-          Daftar Tugasku
+          Daftar Tugas{user && <span> {user.name.toUpperCase()}</span>}
         </h1>
         {!is_login && (
           <p className="text-gray-500 text-sm mt-1 hidden sm:block">
@@ -29,12 +29,21 @@ const Header = () => {
 
       <div className="flex flex-col items-center sm:items-end gap-2">
         {is_login ? (
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors duration-200"
-          >
-            Logout
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href={"/report"}
+              className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition"
+            >
+              Lihat Laporan
+            </Link>
+
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors duration-200"
+            >
+              Logout
+            </button>
+          </div>
         ) : (
           <>
             <p className="text-gray-600 text-sm text-center sm:text-right">
