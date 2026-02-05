@@ -5,11 +5,16 @@ namespace App\Http\Controllers\API;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\TodoReportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class TodoController extends Controller
 {
+    public function __construct(
+        protected TodoReportService $todoReport
+    ) {}
+    
     public function index (Request $request): JsonResponse
     {
         $todos = Todo::query()
@@ -104,5 +109,12 @@ class TodoController extends Controller
         return response()->json([
             'message' => 'Todo Berhasil Di Hapus',
         ]);
+    }
+
+    public function report(Request $request): JsonResponse
+    {
+        $userId = $request->user()->id;
+        $report = $this->todoReport->generateFullReport($userId);
+        return response()->json($report);
     }
 }

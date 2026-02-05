@@ -16,6 +16,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/sync', [TodoController::class, 'sync']);
         Route::put('/{id}', [TodoController::class, 'update']);
         Route::delete('/{id}', [TodoController::class, 'destroy']);
+
+        Route::get('/report', [TodoController::class, 'report']);
     });
 });
 
